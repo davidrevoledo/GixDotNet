@@ -1,11 +1,20 @@
-﻿namespace GixDotnet.Infrastructure.Http
+﻿using GixDotnet.Infrastructure.Http;
+using Newtonsoft.Json;
+
+namespace GixDotnet.Infrastructure.Response
 {
-    public class GixResponse
+    internal class GixResponse
     {
+        [JsonProperty(PropertyName = "status")]
+        public ResponseStatus Status { get; set; }
     }
 
-    public class GixResponse<T>
+    internal class GixResponse<TD> : GixResponse
     {
-        public T Data { get; set; }
+        [JsonProperty(PropertyName = "metadata")]
+        public Metadata MetaData { get; set; }
+
+        [JsonProperty(PropertyName = "data")]
+        public TD Data { get; set; }
     }
 }

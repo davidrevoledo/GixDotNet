@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using GixDotnet.Infrastructure.Http;
+using GixDotnet.Infrastructure.Response;
 using Newtonsoft.Json;
 
 namespace GixDotnet.Infrastructure
