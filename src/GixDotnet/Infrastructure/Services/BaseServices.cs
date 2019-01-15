@@ -1,6 +1,4 @@
-﻿using System;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using GixDotnet.Infrastructure.Http;
 
 namespace GixDotnet.Infrastructure.Services
 {
@@ -9,22 +7,26 @@ namespace GixDotnet.Infrastructure.Services
     /// </summary>
     public abstract class BaseServices
     {
-        /// <summary>
-        ///     Dispatch an operation with a cancellation token source.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="action"></param>
-        /// <param name="cancellationToken"></param>
-        /// <returns></returns>
-        protected async Task<T> Execute<T>(Func<Task<T>> action, CancellationToken cancellationToken)
+        protected BaseServices()
         {
-            while (!cancellationToken.IsCancellationRequested)
-            {
-                var task = action.Invoke();
-                return await task.ConfigureAwait(false);
-            }
+        }
 
-            return default(T);
+        protected BaseServices(GixRequestOptions defaultOptions)
+        {
+            DefaultOptions = defaultOptions;
+        }
+
+        protected GixRequestOptions DefaultOptions { get; set; }
+
+        protected GixRequestOptions SetupRequestOptions(GixRequestOptions gixRequestOptions)
+        {
+            return gixRequestOptions ??
+                   new GixRequestOptions
+                   {
+                       BaseUrl = DefaultOptions?.BaseUrl,
+                       ApiKey = DefaultOptions?.ApiKey,
+                       Version = DefaultOptions?.Version ?? 1
+                   };
         }
     }
 }

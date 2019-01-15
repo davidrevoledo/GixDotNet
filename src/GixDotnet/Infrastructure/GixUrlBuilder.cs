@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using GixDotnet.Infrastructure.Services;
@@ -24,23 +23,14 @@ namespace GixDotnet.Infrastructure
             new StringBuilder($"{CompanyUrlFormat}/{VersionFormat}/{ResourceFormat}");
 
         private int _mayorVersion = 1;
-        private int _minorVersion;
         private BaseUrlParams _params = BaseUrlParams.Create();
         private string _resource;
-        private Uri _uri;
+        private string _uri;
 
         public GixUrlBuilder MayorVersion(int version)
         {
             Guard.Ensures(version > 1);
             _mayorVersion = version;
-            return this;
-        }
-
-        public GixUrlBuilder MinorVersion(Versioning.MinorVersion minorVersion)
-        {
-            var version = (int) minorVersion;
-            Guard.Ensures(version >= 0);
-            _minorVersion = version;
             return this;
         }
 
@@ -51,7 +41,7 @@ namespace GixDotnet.Infrastructure
             return this;
         }
 
-        public GixUrlBuilder CompanyUrl(Uri uri)
+        public GixUrlBuilder CompanyUrl(string uri)
         {
             _uri = uri;
             return this;
@@ -71,8 +61,9 @@ namespace GixDotnet.Infrastructure
             if (_uri == null)
                 throw new InvalidOperationException("Please complete company url first");
 
-            _stringBuilder.Replace(CompanyUrlFormat, _uri.AbsoluteUri);
-            _stringBuilder.Replace(ResourceFormat, $"{_mayorVersion}.{_minorVersion}");
+            const int minor = (int) Versioning.MinorVersion._4;
+            _stringBuilder.Replace(CompanyUrlFormat, _uri);
+            _stringBuilder.Replace(ResourceFormat, $"{_mayorVersion}.{minor}");
             _stringBuilder.Replace(ResourceFormat, _resource);
 
             return _stringBuilder.ToString();

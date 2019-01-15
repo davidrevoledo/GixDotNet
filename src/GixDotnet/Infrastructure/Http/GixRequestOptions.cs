@@ -1,10 +1,15 @@
-﻿namespace GixDotnet.Infrastructure
+﻿namespace GixDotnet.Infrastructure.Http
 {
     /// <summary>
-    ///     Indicate the structure with the information to make an Http Request within GIX structure.
+    ///     GIX request options.
     /// </summary>
-    internal class GixRequest
+    public class GixRequestOptions
     {
+        /// <summary>
+        ///     Base company url where go through the resources.
+        /// </summary>
+        public string BaseUrl { get; set; }
+
         /// <summary>
         ///     Indicate gix request version, default 1.
         /// </summary>

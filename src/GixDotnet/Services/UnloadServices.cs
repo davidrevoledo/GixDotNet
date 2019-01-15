@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Threading;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using GixDotnet.Entities;
 using GixDotnet.Infrastructure;
+using GixDotnet.Infrastructure.Http;
 using GixDotnet.Infrastructure.Services;
 using GixDotnet.Services.Options;
 
@@ -11,38 +11,41 @@ namespace GixDotnet.Services
     /// <summary>
     ///     Services for unload movements methods.
     /// </summary>
-    public class UnloadServices : BaseServices
+    internal class UnloadServices : BaseServices
     {
+        public UnloadServices()
+        {
+        }
+
+        public UnloadServices(GixRequestOptions defaultOptions) :base(defaultOptions)
+        {
+            
+        }
+
         /// <summary>
         ///     Get unload with multiple params inside the filter.
         /// </summary>
-        /// <param name="companyUrl">company urlBuilder</param>
         /// <param name="filter">Request object to get unload movements.</param>
-        /// <param name="cancellationToken"></param>
+        /// <param name="options">options to call the request.</param>
         /// <returns>a collection of unload movements.</returns>
-        public Task<string> Get(
-            Uri companyUrl,
-            UnloadFilter filter,
-            CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<IEnumerable<Unload>> Get(UnloadFilter filter, GixRequestOptions options = null)
         {
-            Guard.NotNull(companyUrl);
             Guard.NotNull(filter);
+            var configs = SetupRequestOptions(options);
 
-            return Execute(async () =>
-            {
-                var urlBuilder = new GixUrlBuilder()
-                    .CompanyUrl(companyUrl)
-                    .MayorVersion(filter.Version)
-                    .MinorVersion(filter.MinorVersion)
-                    .Resource(Urls.GetUnloads);
+            var urlBuilder = new GixUrlBuilder()
+                .CompanyUrl(configs.BaseUrl)
+                .MayorVersion(filter.Version)
+                .Resource(Urls.GetUnloads);
 
-                TransformUri(urlBuilder, filter);
-                var url = urlBuilder.ToString();
+            TransformUri(urlBuilder, filter);
+            var url = urlBuilder.ToString();
 
-                await Task.Delay(1);
+            var unloadMovements =
+                await Requestor.GetStringAsync<IEnumerable<Unload>>(url, configs)
+                    .ConfigureAwait(false);
 
-                return "";
-            }, cancellationToken);
+            return unloadMovements.Data;
         }
 
         private static void TransformUri(GixUrlBuilder urlBuilder, UnloadFilter filter)
@@ -55,7 +58,7 @@ namespace GixDotnet.Services
                 .AddIfHasValue("numeroCTG", filter.CGTNumber)
                 .AddIfHasValue("corredorComprador", filter.SellerBrokerCUIL)
                 .AddIfHasValue("corredorVendedor.cuit", filter.SellerBrokerCUIL)
-                .AddIfHasValue("vendedor.cuit", filter.SellerCUIT) // todo validate vomprador
+                .AddIfHasValue("vendedor.cuit", filter.SellerCUIT)
                 .AddIfHasValue("comprador.cuitfilter", filter.BuyerCUIT)
                 .AddIfHasValue("producto.codigo", filter.ProductCode)
                 .AddIfNotNullOrEmpty("numeroContratoComprador", filter.BuyerContractNumber)
