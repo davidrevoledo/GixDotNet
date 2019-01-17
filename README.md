@@ -1,10 +1,3 @@
-# GixDotNet
-Gix implementation for https://www.bcr.com.ar/Documentos/varios/GIXv1.4.pdf
-
-<p align="center">
-  <img src="GixDotNetImage.png" alt="GixDotNet" width="100"/>
-</p>
-
 GixDotNet
 ====================
 - Dotnet implementation for [GIX Protocol](https://www.bcr.com.ar/Documentos/varios/GIXv1.4.pdf)
