@@ -1,10 +1,8 @@
 # GixDotNet
 Gix implementation for https://www.bcr.com.ar/Documentos/varios/GIXv1.4.pdf
 
-[![CodeFactor](https://www.codefactor.io/repository/github/davidrevoledo/aspnetcore.autohealthcheck/badge)](https://www.codefactor.io/repository/github/davidrevoledo/aspnetcore.autohealthcheck)
-
 <p align="center">
-  <img src="GixDotNet.png" alt="GixDotNet" width="100"/>
+  <img src="GixDotNetImage.png" alt="GixDotNet" width="100"/>
 </p>
 
 GixDotNet
